@@ -20,6 +20,14 @@ const Home = () => {
 	const [searchParams] = useSearchParams();
 	const password = searchParams.get("password");
 
+	const [combinedData, setCombinedData] = useState("");
+	const [idDetails, setIdDetails] = useState({
+		mail: " ",
+		uid: " ",
+		pass: " ",
+		twoFA: " ",
+	});
+
 	const getDetails = async () => {
 		try {
 			setLoading(true);
@@ -58,9 +66,44 @@ const Home = () => {
 	const { hasCopied: hasCopiedPassword, onCopy: onCopyPassword } =
 		useClipboard(password);
 
+	// Mock data for mail, uid, pass, and 2FA (replace with actual values from your state)
+	// const mail = "sample@mail.com";
+	// const uid = "123456789";
+	// const pass = "Buser2024";
+	// const twoFA = "543210";
+
+	// Use tab separator "\t" to separate data for columns
+	const combinedString = `${idDetails.mail}\t${idDetails.uid}\t${idDetails.pass}\t${idDetails.twoFA}`;
+	// Clipboard functionality for copying combined data
+	const { hasCopied: hasCopiedCombinedData, onCopy: onCopyCombinedData } =
+		useClipboard(combinedString);
+
 	if (loading) {
 		return <LoadingPage />;
 	}
+
+	// Function to update combined data into the textarea
+	const handleCombineData = () => {
+		// const combinedString = `${mail},${uid},${pass},${twoFA}`;
+		setCombinedData(combinedString); // Update state with the combined string
+	};
+
+	// Clipboard functionality for copying all data
+
+	// Call this when you want to trigger the copying after data update
+	const handleCopyData = () => {
+		handleCombineData(); // Update the combinedData first
+		onCopyCombinedData(); // Copy the combined data
+	};
+
+	const handlePaste = async () => {
+		try {
+			const text = await navigator.clipboard.readText();
+			setIdDetails({ ...idDetails, uid: text.split("?id=")[1] }); // Paste the copied text
+		} catch (err) {
+			console.error("Failed to read clipboard contents: ", err);
+		}
+	};
 
 	return (
 		<div className='relative min-h-screen w-full'>
@@ -70,8 +113,31 @@ const Home = () => {
 				className='object-cover w-full h-full opacity-50 z-[1]'
 			/>
 			<div className='absolute top-0 left-0 z-[2] flex items-center justify-center min-h-screen w-full'>
-				<div className='max-w-[350px]'>
+				<div className='w-full max-w-[370px]'>
 					<h1 className='text-3xl font-bold mb-5'>Information Form</h1>
+
+					{/* Textarea to display combined data */}
+					<textarea
+						value={`${idDetails.mail}\n${idDetails.uid}\n${idDetails.pass}\n${idDetails.twoFA}`}
+						readOnly
+						rows={4}
+						className='border rounded-lg w-full p-2 bg-white text-slate-800 mt-2'
+						placeholder='Combined data will appear here'
+					/>
+
+					{/* Button to copy all data */}
+					<button
+						className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
+						onClick={handleCopyData}
+					>
+						{hasCopiedCombinedData ? (
+							"Copied All"
+						) : (
+							<span className='flex items-center gap-1'>
+								<FaRegCopy /> Copy All
+							</span>
+						)}
+					</button>
 
 					{/* Password  */}
 					{password && (
@@ -81,7 +147,10 @@ const Home = () => {
 								<h3>{password}</h3>
 								<button
 									className='border rounded-lg py-[4px] px-2'
-									onClick={onCopyPassword}
+									onClick={() => {
+										onCopyPassword,
+											setIdDetails({ ...idDetails, pass: password });
+									}}
 								>
 									{hasCopiedPassword ? (
 										"Copied"
@@ -144,7 +213,11 @@ const Home = () => {
 							<h3>{details?.email}</h3>
 							<button
 								className='border rounded-lg py-[4px] px-2'
-								onClick={onCopyEmail}
+								// onClick={onCopyEmail}
+								onClick={() => {
+									onCopyEmail,
+										setIdDetails({ ...idDetails, mail: details.email });
+								}}
 							>
 								{hasCopiedEmail ? (
 									"Copied"
@@ -161,7 +234,34 @@ const Home = () => {
 					<InboxCode email={details?.email} />
 
 					{/* 2FA Code */}
-					<FactorCode />
+					<FactorCode idDetails={idDetails} setIdDetails={setIdDetails} />
+
+					{/* UID */}
+					<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
+						<h6 className='font-medium'>UID</h6>
+
+						<div className='border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
+							<input
+								type='text'
+								value={idDetails?.uid}
+								onChange={e =>
+									setIdDetails({ ...idDetails, uid: e.target.value })
+								}
+								className='w-full bg-transparent border-none outline-none'
+							/>
+						</div>
+
+						<div className='flex items-center gap-2 mt-2'>
+							<button
+								className='border rounded-lg py-[4px] px-3'
+								onClick={handlePaste}
+							>
+								<span className='flex items-center gap-1'>
+									<FaRegCopy /> Paste Url
+								</span>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

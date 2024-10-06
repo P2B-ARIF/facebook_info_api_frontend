@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
 
-const FactorCode = () => {
+const FactorCode = ({ idDetails, setIdDetails }) => {
 	const [code, setCode] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [inputValue, setInputValue] = useState(""); // Initialize with email
@@ -37,6 +37,7 @@ const FactorCode = () => {
 		try {
 			const text = await navigator.clipboard.readText();
 			setInputValue(text); // Paste the copied text
+			setIdDetails({ ...idDetails, twoFA: text });
 		} catch (err) {
 			console.error("Failed to read clipboard contents: ", err);
 		}

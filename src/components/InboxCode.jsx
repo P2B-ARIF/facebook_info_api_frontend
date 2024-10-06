@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import MailBoxCode from "./MailBoxCode";
 
 const InboxCode = ({ email }) => {
 	const [code, setCode] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const [mailbox, setMailbox] = useState([]);
 
 	// const res = [
 	// 	{
@@ -23,32 +25,38 @@ const InboxCode = ({ email }) => {
 		try {
 			setLoading(true);
 
+			const email1 = "hejozv@1secmail.com";
+			// const email1 = "hd057l@1secmail.com";
+			console.log();
+
 			const { data } = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email}`,
+				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email1}`,
 				{
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem("token")}`,
 					},
 				},
 			);
-			if (data.length > 0 && data[0].subject) {
-				const subject = data[0].subject;
-				const match = subject.match(/\d+/);
-				if (match) {
-					const confirmationCode = match[0];
-					setCode(confirmationCode);
-					return confirmationCode;
-				} else {
-					console.log("No confirmation code found in subject.");
-				}
-			} else {
-				console.log("No email data or subject found.");
-			}
+			setMailbox(data);
+			console.log(data, "data");
+
+			// if (data.length > 0 && data[0].subject) {
+			// 	const subject = data[0].subject;
+			// 	const match = subject.match(/\d+/);
+			// 	if (match) {
+			// 		const confirmationCode = match[0];
+			// 		setCode(confirmationCode);
+			// 		return confirmationCode;
+			// 	} else {
+			// 		console.log("No confirmation code found in subject.");
+			// 	}
+			// } else {
+			// 	console.log("No email data or subject found.");
+			// }
 		} catch (err) {
-			if (!err.response.data.access) {
+			if (err.response && !err.response.data.access) {
 				navigate("/");
 			}
-
 			console.error("Error fetching details", err.message);
 		} finally {
 			setLoading(false);
@@ -63,41 +71,39 @@ const InboxCode = ({ email }) => {
 		return () => clearInterval(intervalId);
 	}, []);
 
-	const { hasCopied: hasCopiedEmailCode, onCopy: onCopyEmailCode } =
-		useClipboard(code);
+	// const { hasCopied: hasCopiedEmailCode, onCopy: onCopyEmailCode } =
+	// 	useClipboard(code);
 
 	return (
 		<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
-			<h6 className='font-medium'>Verify Code</h6>
-			<div className='flex items-center justify-between border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
-				{/* <h3>{code}</h3> */}
-				<input type='number' defaultValue={code} placeholder='verify code' />
-				<div className='flex items-center gap-2'>
-					<button
-						className='border rounded-lg py-[4px] px-2 bg-blue-200'
-						onClick={handleReload}
-					>
-						{loading ? (
-							"Loading.."
-						) : (
-							<span className='flex items-center gap-1'>
-								<IoReload /> Reload
-							</span>
-						)}
-					</button>
-					<button
-						className='border rounded-lg py-[4px] px-2 bg-slate-200'
-						onClick={onCopyEmailCode}
-					>
-						{hasCopiedEmailCode ? (
-							"Copied"
-						) : (
-							<span className='flex items-center gap-1'>
-								<FaRegCopy /> Copy
-							</span>
-						)}
-					</button>
-				</div>
+			<div className='flex items-center justify-between'>
+				<h6 className='font-medium'>Verify Code</h6>
+				<button
+					className='border rounded-lg py-[4px] px-2 bg-slate-200 text-black'
+					onClick={handleReload}
+				>
+					{loading ? (
+						"Loading.."
+					) : (
+						<span className='flex items-center gap-1'>
+							<IoReload /> Reload
+						</span>
+					)}
+				</button>
+			</div>
+			{/* <div className='flex items-center justify-between border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'> */}
+			{/* <div className=' border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'> */}
+			<div className='bg-white text-slate-800 border rounded-md p-2 flex flex-col gap-2 mt-2'>
+				{mailbox.length > 0 ? (
+					mailbox?.map((mail, i) => <MailBoxCode key={i} mail={mail} />)
+				) : (
+					<input
+						type='text'
+						placeholder='No verification code available'
+						readOnly
+						className='bg-white text-slate-800 border p-2 rounded'
+					/>
+				)}
 			</div>
 		</div>
 	);
