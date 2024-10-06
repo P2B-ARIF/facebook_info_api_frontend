@@ -1,6 +1,6 @@
 import { useClipboard } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
 
 const FactorCode = ({ idDetails, setIdDetails }) => {

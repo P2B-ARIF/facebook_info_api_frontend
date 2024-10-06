@@ -1,13 +1,10 @@
-import { useClipboard } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaRegCopy } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import MailBoxCode from "./MailBoxCode";
 
 const InboxCode = ({ email }) => {
-	const [code, setCode] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const [mailbox, setMailbox] = useState([]);
@@ -25,12 +22,12 @@ const InboxCode = ({ email }) => {
 		try {
 			setLoading(true);
 
-			const email1 = "hejozv@1secmail.com";
+			// const email1 = "hejozv@1secmail.com";
 			// const email1 = "hd057l@1secmail.com";
 			console.log();
 
 			const { data } = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email1}`,
+				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email}`,
 				{
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -38,7 +35,7 @@ const InboxCode = ({ email }) => {
 				},
 			);
 			setMailbox(data);
-			console.log(data, "data");
+			// console.log(data, "data");
 
 			// if (data.length > 0 && data[0].subject) {
 			// 	const subject = data[0].subject;
