@@ -31,7 +31,7 @@ const FactorCode = ({ idDetails, setIdDetails }) => {
 	};
 
 	const { hasCopied: hasCopiedFactorCode, onCopy: onCopyFactorCode } =
-		useClipboard(code);
+		useClipboard(inputValue);
 
 	const handlePaste = async () => {
 		try {
