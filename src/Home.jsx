@@ -113,7 +113,7 @@ const Home = () => {
 				className='object-cover w-full h-full opacity-50 z-[1]'
 			/>
 			<div className='absolute top-0 left-0 z-[2] flex items-center justify-center min-h-screen w-full'>
-				<div className='w-full max-w-[370px]'>
+				<div className='w-full max-w-[370px] p-5'>
 					<h1 className='text-3xl font-bold mb-5'>Information Form</h1>
 
 					{/* Textarea to display combined data */}
