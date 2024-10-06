@@ -23,6 +23,7 @@ const FactorCode = ({ idDetails, setIdDetails }) => {
 				},
 			);
 			setInputValue(res.data);
+			setCode(res.data);
 		} catch (err) {
 			console.error("Error fetching details", err.message);
 		} finally {
@@ -31,7 +32,7 @@ const FactorCode = ({ idDetails, setIdDetails }) => {
 	};
 
 	const { hasCopied: hasCopiedFactorCode, onCopy: onCopyFactorCode } =
-		useClipboard(inputValue);
+		useClipboard(code);
 
 	const handlePaste = async () => {
 		try {
