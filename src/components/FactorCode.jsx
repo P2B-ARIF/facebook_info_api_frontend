@@ -9,19 +9,18 @@ const FactorCode = ({ idDetails, setIdDetails }) => {
 	const [inputValue, setInputValue] = useState(""); // Initialize with email
 
 	const handleFactorCode = async () => {
+		// const url = import.meta.env.VITE_TWO_FA;
+		const url = import.meta.env.VITE_SERVER_LINK;
+		const secret = inputValue.match(/[a-zA-Z0-9]/g).join("");
+
 		try {
 			setCode("");
 			setLoading(true);
-			const res = await axios.get(
-				`${
-					import.meta.env.VITE_SERVER_LINK
-				}/get_2fa_code?key=${inputValue.trim()}`,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
+			const res = await axios.get(`${url}/get_2fa_code?key=${secret}`, {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
-			);
+			});
 			setInputValue(res.data);
 			setCode(res.data);
 		} catch (err) {
