@@ -73,32 +73,44 @@ const Home = () => {
 	// const twoFA = "543210";
 
 	// Use tab separator "\t" to separate data for columns
-	const combinedString = `${idDetails.mail}\t${idDetails.uid}\t${idDetails.pass}\t${idDetails.twoFA}`;
+	const pcString = `${idDetails.mail}\t${idDetails.uid}\t${idDetails.pass}\t${idDetails.twoFA}`;
+	const mobileString = `${idDetails.mail},${idDetails.uid},${idDetails.pass},${idDetails.twoFA}`;
+
 	// Clipboard functionality for copying combined data
-	const { hasCopied: hasCopiedCombinedData, onCopy: onCopyCombinedData } =
-		useClipboard(combinedString);
+	const { hasCopied: hasCopiedCombinedDataPc, onCopy: onCopyCombinedDataPc } =
+		useClipboard(pcString);
+
+	const {
+		hasCopied: hasCopiedCombinedDataMobile,
+		onCopy: onCopyCombinedDataMobile,
+	} = useClipboard(mobileString);
 
 	if (loading) {
 		return <LoadingPage />;
 	}
 
 	// Function to update combined data into the textarea
-	const handleCombineData = () => {
-		// const combinedString = `${mail},${uid},${pass},${twoFA}`;
-		setCombinedData(combinedString); // Update state with the combined string
-	};
+	// const handleCombineData = () => {
+	// 	// const combinedString = `${mail},${uid},${pass},${twoFA}`;
+	// 	setCombinedData(combinedString); // Update state with the combined string
+	// };
 
 	// Clipboard functionality for copying all data
 
 	// Call this when you want to trigger the copying after data update
-	const handleCopyData = () => {
-		handleCombineData(); // Update the combinedData first
-		onCopyCombinedData(); // Copy the combined data
+	const handleCopyDataPc = () => {
+		// handleCombineData(); // Update the combinedData first
+		onCopyCombinedDataPc(); // Copy the combined data
+	};
+	const handleCopyDataMobile = () => {
+		// handleCombineData(); // Update the combinedData first
+		onCopyCombinedDataMobile(); // Copy the combined data
 	};
 
 	const handlePaste = async () => {
 		try {
 			const text = await navigator.clipboard.readText();
+			if (!text) return;
 			setIdDetails({ ...idDetails, uid: text.split("?id=")[1] }); // Paste the copied text
 		} catch (err) {
 			console.error("Failed to read clipboard contents: ", err);
@@ -126,18 +138,32 @@ const Home = () => {
 					/>
 
 					{/* Button to copy all data */}
-					<button
-						className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
-						onClick={handleCopyData}
-					>
-						{hasCopiedCombinedData ? (
-							"Copied All"
-						) : (
-							<span className='flex items-center gap-1'>
-								<FaRegCopy /> Copy All
-							</span>
-						)}
-					</button>
+					<div className='flex items-center gap-2'>
+						<button
+							className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
+							onClick={handleCopyDataPc}
+						>
+							{hasCopiedCombinedDataPc ? (
+								"Copied All"
+							) : (
+								<span className='flex items-center gap-1'>
+									<FaRegCopy /> Pc Copy
+								</span>
+							)}
+						</button>
+						<button
+							className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
+							onClick={handleCopyDataMobile}
+						>
+							{hasCopiedCombinedDataMobile ? (
+								"Copied All"
+							) : (
+								<span className='flex items-center gap-1'>
+									<FaRegCopy /> Mobile Copy
+								</span>
+							)}
+						</button>
+					</div>
 
 					{/* Password  */}
 					{password && (
@@ -148,7 +174,7 @@ const Home = () => {
 								<button
 									className='border rounded-lg py-[4px] px-2'
 									onClick={() => {
-										onCopyPassword,
+										onCopyPassword(),
 											setIdDetails({ ...idDetails, pass: password });
 									}}
 								>
@@ -215,8 +241,8 @@ const Home = () => {
 								className='border rounded-lg py-[4px] px-2'
 								// onClick={onCopyEmail}
 								onClick={() => {
-									onCopyEmail,
-										setIdDetails({ ...idDetails, mail: details.email });
+									setIdDetails({ ...idDetails, mail: details.email }),
+										onCopyEmail();
 								}}
 							>
 								{hasCopiedEmail ? (
