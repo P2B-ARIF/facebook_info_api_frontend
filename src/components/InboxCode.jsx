@@ -25,6 +25,11 @@ const InboxCode = ({ email }) => {
 
 			const { data } = await axios.get(
 				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email}`,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				},
 			);
 			if (data.length > 0 && data[0].subject) {
 				const subject = data[0].subject;
@@ -44,7 +49,7 @@ const InboxCode = ({ email }) => {
 				navigate("/");
 			}
 
-			console.error("Error fetching details", err);
+			console.error("Error fetching details", err.message);
 		} finally {
 			setLoading(false);
 		}
@@ -53,8 +58,7 @@ const InboxCode = ({ email }) => {
 	useEffect(() => {
 		const intervalId = setInterval(() => {
 			handleReload();
-			console.log("hi");
-		}, 5000);
+		}, 10000);
 
 		return () => clearInterval(intervalId);
 	}, []);

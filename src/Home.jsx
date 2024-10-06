@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import bgImage from "./assets/fb_bg1.jpg";
+import { useClipboard } from "@chakra-ui/react";
 import axios from "axios";
-import { Button, useClipboard, useQuery } from "@chakra-ui/react";
-import LoadingPage from "./components/LoadingPage";
+import React, { useEffect, useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
-import InboxCode from "./components/InboxCode";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import bgImage from "./assets/fb_bg1.jpg";
 import FactorCode from "./components/FactorCode";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import InboxCode from "./components/InboxCode";
+import LoadingPage from "./components/LoadingPage";
 
 const Home = () => {
 	const [details, setDetails] = useState({
@@ -15,7 +15,7 @@ const Home = () => {
 		email: "",
 	});
 	const [loading, setLoading] = useState(false);
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	const [searchParams] = useSearchParams();
 	const password = searchParams.get("password");
@@ -25,9 +25,13 @@ const Home = () => {
 			setLoading(true);
 			const res = await axios.get(
 				`${import.meta.env.VITE_SERVER_LINK}/get_details`,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				},
 			);
 			setDetails(res.data);
-
 		} catch (err) {
 			if (!err.response.data.access) {
 				navigate("/");

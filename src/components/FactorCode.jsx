@@ -16,10 +16,15 @@ const FactorCode = () => {
 				`${
 					import.meta.env.VITE_SERVER_LINK
 				}/get_2fa_code?key=${inputValue.trim()}`,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				},
 			);
 			setInputValue(res.data);
 		} catch (err) {
-			console.error("Error fetching details", err);
+			console.error("Error fetching details", err.message);
 		} finally {
 			setLoading(false);
 		}

@@ -27,7 +27,8 @@ const IpNotFound = ({ open, setOpen }) => {
 
 						<div className='pb-10'>
 							<p className='text-center text-[17px] sm:text-md md:text-lg font-semibold text-red-600'>
-								YOUR IP IS NOT IN THE DATABASE
+								{/* YOUR IP IS NOT IN THE DATABASE */}
+								IF YOU DON'T HAVE LOGIN ACCESS
 							</p>
 							<p className='text-center'>Please buy package</p>
 							<div className='flex justify-center mt-3'>
