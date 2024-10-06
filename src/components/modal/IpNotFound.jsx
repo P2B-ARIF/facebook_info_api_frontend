@@ -33,7 +33,7 @@ const IpNotFound = ({ open, setOpen }) => {
 							<p className='text-center'>Please buy package</p>
 							<div className='flex justify-center mt-3'>
 								<a
-									href='https://wa.me/+8801953424319?text=I WANT TO BUY MONTHLY FACEBOOK HELPER PACKAGE'
+									href='https://wa.me/8801953424319?text=I%20WANT%20TO%20BUY%20MONTHLY%20FACEBOOK%20HELPER%20PACKAGE'
 									className='flex items-center gap-2 bg-green-500 text-white px-5 py-1.5 rounded-lg'
 								>
 									<FaWhatsapp />

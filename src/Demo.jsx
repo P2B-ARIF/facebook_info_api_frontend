@@ -19,9 +19,9 @@ const Demo = () => {
 		}
 	};
 
-	useEffect(() => {
-		allIP();
-	}, []);
+	// useEffect(() => {
+	// 	allIP();
+	// }, []);
 
 	return <div>Demo</div>;
 };
