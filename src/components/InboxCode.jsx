@@ -35,21 +35,6 @@ const InboxCode = ({ email }) => {
 				},
 			);
 			setMailbox(data);
-			// console.log(data, "data");
-
-			// if (data.length > 0 && data[0].subject) {
-			// 	const subject = data[0].subject;
-			// 	const match = subject.match(/\d+/);
-			// 	if (match) {
-			// 		const confirmationCode = match[0];
-			// 		setCode(confirmationCode);
-			// 		return confirmationCode;
-			// 	} else {
-			// 		console.log("No confirmation code found in subject.");
-			// 	}
-			// } else {
-			// 	console.log("No email data or subject found.");
-			// }
 		} catch (err) {
 			if (err.response && !err.response.data.access) {
 				navigate("/");
@@ -76,6 +61,7 @@ const InboxCode = ({ email }) => {
 			<div className='flex items-center justify-between'>
 				<h6 className='font-medium'>Verify Code</h6>
 				<button
+					disabled={loading}
 					className='border rounded-lg py-[4px] px-2 bg-slate-200 text-black'
 					onClick={handleReload}
 				>

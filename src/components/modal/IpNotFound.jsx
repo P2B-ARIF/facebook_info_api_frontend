@@ -16,7 +16,6 @@ const IpNotFound = ({ open, setOpen }) => {
 	return (
 		<>
 			{/* <Button onClick={onOpen}>Open Modal</Button> */}
-
 			<Modal isOpen={open} onClose={() => setOpen(false)}>
 				<ModalOverlay />
 				<ModalContent>
