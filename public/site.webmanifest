@@ -1,5 +1,5 @@
 {
-	"name": "facebook_api",
+	"name": "facebook_api_fronted",
 	"short_name": "fbapi",
 	"icons": [
 		{
@@ -15,6 +15,5 @@
 	],
 	"theme_color": "#ffffff",
 	"background_color": "#ffffff",
-	"display": "standalone",
-    "start_url": "."
+	"display": "standalone"
 }
