@@ -5,6 +5,7 @@ import bgImage from "./assets/fb_bg.png";
 import IpNotFound from "./components/modal/IpNotFound";
 import { useNavigate } from "react-router-dom";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { toast } from "react-hot-toast";
 
 const App = () => {
 	// const [myIp, setMyIp] = useState("");
@@ -41,13 +42,23 @@ const App = () => {
 				},
 			);
 
-			if (data.access) {
+			if (data.membership) {
 				navigate("/api");
 			}
-		} catch (err) {
-			console.log(err.message);
-			if (!err.response.data.access) {
+
+			if (!data.membership) {
+				toast.error("Your Membership is expired..");
 				setOpen(true);
+			}
+
+			console.log("check user try", data);
+		} catch (err) {
+			console.log("check user catch", err.response);
+			if (!err.response.data.membership) {
+				setOpen(true);
+			}
+			if (!err.response.data.access) {
+				toast.error(err.response.data.message);
 			}
 			navigate("/");
 		}
@@ -78,10 +89,18 @@ const App = () => {
 				setOpen(true);
 				navigate("/");
 			}
+
+			if (!data.membership) {
+				toast.error("Your Membership is expired..");
+			}
+
+			
 		} catch (err) {
-			console.error("Login error:", err.message);
+			console.error("Login error:", err);
 			setErr(err.response.message);
+
 			if (err.response && err.response.data && !err.response.data.access) {
+				toast.error(err.response.data.message);
 				setOpen(true); // Open some error UI (modal or alert)
 			} else {
 				console.log("Unknown error occurred.");
@@ -114,7 +133,7 @@ const App = () => {
 						</FormLabel>
 						<Input
 							name='email'
-							type='email'
+							type='text'
 							placeholder='Email'
 							required
 							focusBorderColor='blue.400'

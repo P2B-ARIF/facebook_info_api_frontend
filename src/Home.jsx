@@ -5,6 +5,7 @@ import Complete from "./components/mode/Complete";
 import Quick from "./components/mode/Quick";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 	const [mode, setMode] = useState("complete");
@@ -13,6 +14,8 @@ const Home = () => {
 
 	const complete = import.meta.env.VITE_COMPLETE_PRICE;
 	const quick = import.meta.env.VITE_QUICK_PRICE;
+
+	const navigate = useNavigate();
 
 	const fetchingTodayId = async () => {
 		try {
@@ -31,7 +34,27 @@ const Home = () => {
 		}
 	};
 
+	const checkUser = async () => {
+		try {
+			const { data } = await axios.get(
+				`${import.meta.env.VITE_SERVER_LINK}/user_verify`,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				},
+			);
+
+			if (!data.membership) {
+				navigate("/");
+			}
+		} catch (err) {
+			navigate("/");
+		}
+	};
+
 	useEffect(() => {
+		checkUser();
 		fetchingTodayId();
 	}, []);
 

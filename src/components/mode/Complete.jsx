@@ -103,10 +103,10 @@ const Complete = ({ mode }) => {
 			const { mail, pass, uid, twoFA } = idDetails || {};
 
 			if (
-				mail.length < 2 &&
-				pass.length < 2 &&
-				uid.length < 2 &&
-				twoFA.length < 2
+				mail.length < 3 ||
+				pass.length < 3 ||
+				uid.length < 3 ||
+				twoFA.length < 3
 			) {
 				return toast.error("Full Data are required");
 			}
