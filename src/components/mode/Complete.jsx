@@ -1,137 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Input, Heading, useClipboard } from "@chakra-ui/react";
-import axios from "axios";
-import LoadingPage from "./components/LoadingPage";
-
-const App = () => {
-	const [details, setDetails] = useState({
-		girlName: { fname: "", lname: "" },
-		number: "",
-		email: "",
-	});
-	const [loading, setLoading] = useState(false);
-	const [mailCode, setMailCode] = useState(0);
-
-	const getDetails = async () => {
-		try {
-			setLoading(true);
-			const res = await axios.get("http://localhost:5001/get_details");
-			setDetails(res.data);
-		} catch (err) {
-			console.error("Error fetching details", err);
-		} finally {
-			setLoading(false);
-		}
-	};
-	// Check inbox
-	const handleCheckCode = async () => {
-		try {
-			const res = await axios.get(
-				`http://localhost:5001/check_inbox?email=${email}`,
-			);
-			setMailCode(res.data);
-		} catch (err) {
-			console.error("Error checking inbox", err);
-		}
-	};
-
-	useEffect(() => {
-		getDetails();
-	}, []);
-
-	const { hasCopied: hasCopiedName, onCopy: onCopyName } = useClipboard(
-		`${details?.girlName?.fname} ${details?.girlName?.lname}`,
-	);
-	const { hasCopied: hasCopiedNumber, onCopy: onCopyNumber } = useClipboard(
-		details?.number,
-	);
-	const { hasCopied: hasCopiedEmail, onCopy: onCopyEmail } = useClipboard(
-		details.email,
-	);
-
-	if (loading) {
-		return <LoadingPage />;
-	}
-
-	return (
-		<Box maxW='md' mx='auto' mt={10}>
-			<h1 className='my-6 font-bold text-lg'>Unlimited Facebook</h1>
-
-			{/* Name Input */}
-			<Box mb={4} display={"flex"} alignItems={"center"}>
-				<Input
-					value={`${details?.girlName?.fname} ${details.girlName.lname}`}
-					isReadOnly
-				/>
-				<Button
-					colorScheme='teal'
-					size='md'
-					paddingX={7}
-					onClick={onCopyName}
-					ml={2}
-				>
-					{hasCopiedName ? "Copied" : "Copy Name"}
-				</Button>
-			</Box>
-
-			{/* Phone Number Input */}
-			<Box mb={4} display={"flex"} alignItems={"center"}>
-				<Input value={details.number} isReadOnly />
-				<Button
-					colorScheme='teal'
-					size='md'
-					paddingX={7}
-					onClick={onCopyNumber}
-					ml={2}
-				>
-					{hasCopiedNumber ? "Copied" : "Copy Number"}
-				</Button>
-			</Box>
-
-			{/* Email Input */}
-			<Box mb={4} display={"flex"} alignItems={"start"}>
-				<Input value={details.email} isReadOnly />
-				<div className='flex flex-col items-center justify-stretch gap-2'>
-					<Button
-						colorScheme='teal'
-						size='md'
-						paddingX={7}
-						onClick={onCopyEmail}
-						ml={2}
-					>
-						{hasCopiedEmail ? "Copied" : "Copy Email"}
-					</Button>
-					<Button
-						colorScheme='teal'
-						size='md'
-						paddingX={"26px"}
-						onClick={handleCheckCode}
-						ml={2}
-					>
-						Check Code
-					</Button>
-				</div>
-			</Box>
-		</Box>
-	);
-};
-
-export default App;
-
-
-
 import { useClipboard } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import UpdatePass from "../modal/UpdatePass";
 import FactorCode from "./../FactorCode";
 import InboxCode from "./../InboxCode";
 import LoadingPage from "./../LoadingPage";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Complete = ({ mode }) => {
-	console.log(mode, "mode");
+	// console.log(mode, "mode");
 
 	const [details, setDetails] = useState({
 		girlName: { fname: "", lname: "" },
@@ -140,9 +20,11 @@ const Complete = ({ mode }) => {
 	});
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [searchParams] = useSearchParams();
 	const password = searchParams.get("password");
+	const location = useLocation();
 
 	useEffect(() => {
 		if (!password) {
@@ -156,6 +38,12 @@ const Complete = ({ mode }) => {
 		pass: " ",
 		twoFA: " ",
 	});
+	// {
+	// 	mail: "arif@gmail.com",
+	// 	uid: "123",
+	// 	pass: "hello",
+	// 	twoFA: "lasjdflasjdlf",
+	// }
 
 	const getDetails = async () => {
 		try {
@@ -195,54 +83,54 @@ const Complete = ({ mode }) => {
 	const { hasCopied: hasCopiedPassword, onCopy: onCopyPassword } =
 		useClipboard(password);
 
-	// Mock data for mail, uid, pass, and 2FA (replace with actual values from your state)
-	// const mail = "sample@mail.com";
-	// const uid = "123456789";
-	// const pass = "Buser2024";
-	// const twoFA = "543210";
-
-	// Use tab separator "\t" to separate data for columns
-	const pcString = `${idDetails.mail}\t${idDetails.uid}\t${idDetails.pass}\t${idDetails.twoFA}`;
-	const mobileString = `${idDetails.mail},${idDetails.uid},${idDetails.pass},${idDetails.twoFA}`;
-
-	// Clipboard functionality for copying combined data
-	const { hasCopied: hasCopiedCombinedDataPc, onCopy: onCopyCombinedDataPc } =
-		useClipboard(pcString);
-
-	const {
-		hasCopied: hasCopiedCombinedDataMobile,
-		onCopy: onCopyCombinedDataMobile,
-	} = useClipboard(mobileString);
-
 	if (loading) {
 		return <LoadingPage />;
 	}
-
-	// Function to update combined data into the textarea
-	// const handleCombineData = () => {
-	// 	// const combinedString = `${mail},${uid},${pass},${twoFA}`;
-	// 	setCombinedData(combinedString); // Update state with the combined string
-	// };
-
-	// Clipboard functionality for copying all data
-
-	// Call this when you want to trigger the copying after data update
-	const handleCopyDataPc = () => {
-		// handleCombineData(); // Update the combinedData first
-		onCopyCombinedDataPc(); // Copy the combined data
-	};
-	const handleCopyDataMobile = () => {
-		// handleCombineData(); // Update the combinedData first
-		onCopyCombinedDataMobile(); // Copy the combined data
-	};
 
 	const handlePaste = async () => {
 		try {
 			const text = await navigator.clipboard.readText();
 			if (!text) return;
-			setIdDetails({ ...idDetails, uid: text.split("?id=")[1] }); // Paste the copied text
+			setIdDetails({ ...idDetails, uid: text.match(/id=(\d+)/)?.[1] }); // Paste the copied text
 		} catch (err) {
 			console.error("Failed to read clipboard contents: ", err);
+		}
+	};
+
+	const handleUpload = async () => {
+		try {
+			setIsLoading(true);
+			const { mail, pass, uid, twoFA } = idDetails || {};
+
+			if (
+				mail.length < 2 &&
+				pass.length < 2 &&
+				uid.length < 2 &&
+				twoFA.length < 2
+			) {
+				return toast.error("Full Data are required");
+			}
+
+			const { data } = await axios.put(
+				`${import.meta.env.VITE_SERVER_LINK}/mail/complete`,
+				{ ...idDetails, mode },
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				},
+			);
+
+			if (data.acknowledged) {
+				toast.success("Successfully Complete Account Created!");
+				setTimeout(() => {
+					window.location.reload();
+				}, 300);
+			}
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -260,6 +148,20 @@ const Complete = ({ mode }) => {
 			{/* Button to copy all data */}
 			<div className='flex items-center gap-2'>
 				<button
+					className='flex items-center gap-2 rounded-lg py-[2px] px-4 bg-green-600 border-[1px] border-green-700 text-white mt-1 mb-2'
+					onClick={handleUpload}
+					disabled={isLoading}
+				>
+					{isLoading ? (
+						"Loading..."
+					) : (
+						<>
+							<FaCloudUploadAlt /> Upload
+						</>
+					)}
+				</button>
+
+				{/* <button
 					className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
 					onClick={handleCopyDataPc}
 				>
@@ -282,7 +184,7 @@ const Complete = ({ mode }) => {
 							<FaRegCopy /> Mobile Copy
 						</span>
 					)}
-				</button>
+				</button> */}
 			</div>
 
 			{/* Password  */}

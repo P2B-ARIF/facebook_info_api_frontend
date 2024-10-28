@@ -24,7 +24,7 @@ const InboxCode = ({ email }) => {
 
 			// const email1 = "hejozv@1secmail.com";
 			// const email1 = "hd057l@1secmail.com";
-			console.log();
+			// console.log();
 
 			const { data } = await axios.get(
 				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email}`,
@@ -39,7 +39,6 @@ const InboxCode = ({ email }) => {
 			if (err.response && !err.response.data.access) {
 				navigate("/");
 			}
-			console.error("Error fetching details", err.message);
 		} finally {
 			setLoading(false);
 		}
@@ -48,7 +47,7 @@ const InboxCode = ({ email }) => {
 	useEffect(() => {
 		const intervalId = setInterval(() => {
 			handleReload();
-		}, 10000);
+		}, 8000);
 
 		return () => clearInterval(intervalId);
 	}, []);
@@ -63,7 +62,7 @@ const InboxCode = ({ email }) => {
 				<button
 					disabled={loading}
 					className='border rounded-lg py-[4px] px-2 bg-slate-200 text-black'
-					onClick={handleReload}
+					onClick={() => setLoading(true)}
 				>
 					{loading ? (
 						"Loading.."
