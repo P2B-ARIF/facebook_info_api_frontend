@@ -6,57 +6,29 @@ import Quick from "./components/mode/Quick";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useGetData from "./hook/getFetching";
+import LoadingPage from "./components/LoadingPage";
 
 const Home = () => {
 	const [mode, setMode] = useState("complete");
 	const [show, setShow] = useState(false);
-	const [todayId, setTodayId] = useState(0);
 
 	const complete = import.meta.env.VITE_COMPLETE_PRICE;
 	const quick = import.meta.env.VITE_QUICK_PRICE;
 
-	const navigate = useNavigate();
-
-	const fetchingTodayId = async () => {
-		try {
-			const { data } = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/api/today`,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				},
-			);
-
-			setTodayId(data.today);
-		} catch (error) {
-			toast.error(error.message);
-		}
-	};
-
-	const checkUser = async () => {
-		try {
-			const { data } = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/user_verify`,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				},
-			);
-
-			if (!data.membership) {
-				navigate("/");
-			}
-		} catch (err) {
-			navigate("/");
-		}
-	};
+	const { data: tData, loading, reFetch: tReFetch } = useGetData("/api/today");
+	const { loading: cLoading, reFetch } = useGetData("/user_verify");
 
 	useEffect(() => {
-		checkUser();
-		fetchingTodayId();
+		(async () => {
+			await tReFetch();
+			await reFetch();
+		})();
 	}, []);
+
+	if (cLoading) {
+		return <LoadingPage />;
+	}
 
 	return (
 		<div className='relative min-h-screen w-full'>
@@ -70,7 +42,9 @@ const Home = () => {
 					<div className='bg-slate-800 text-white transition-all duration-300 ease-linear p-3 rounded-lg border-blue-500 border'>
 						<div className='flex items-center justify-between'>
 							<h3 className='text-xl font-medium mb-5'>Dashboard</h3>
-							<h3 className='text-xl font-medium mb-5'>Today - {todayId}</h3>
+							<h3 className='text-xl font-medium mb-5'>
+								Today - {tData?.today}
+							</h3>
 						</div>
 						<h2 className='text-xl font-bold'>Mode</h2>
 						<div className='flex items-center gap-2'>

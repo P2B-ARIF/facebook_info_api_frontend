@@ -1,72 +1,33 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { TbShieldCheckered } from "react-icons/tb";
-import bgImage from "./assets/fb_bg.png";
-import IpNotFound from "./components/modal/IpNotFound";
-import { useNavigate } from "react-router-dom";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import bgImage from "./assets/fb_bg.png";
+import LoadingPage from "./components/LoadingPage";
+import IpNotFound from "./components/modal/IpNotFound";
+import useGetData from "./hook/getFetching";
+import usePutData from "./hook/putFetching";
 
 const App = () => {
-	// const [myIp, setMyIp] = useState("");
-	const [loading, setLoading] = useState(false);
-	// const [ipLoading, setIpLoading] = useState(false);
-	const navigate = useNavigate();
+	const { data, loading: cLoading, reFetch } = useGetData("/user_verify");
+	const { data: logData, loading, putData } = usePutData("/auth/login");
+
 	const [open, setOpen] = useState(false);
-	const [err, setErr] = useState("");
-
-	// const fetchIp = async () => {
-	// 	try {
-	// 		setLoading(true);
-	// 		const { data } = await axios.get(import.meta.env.VITE_IP_ADDRESS);
-	// 		setMyIp(data.ip);
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	} finally {
-	// 		setLoading(false);
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	fetchIp();
-	// }, []);
-
-	const checkUser = async () => {
-		try {
-			const { data } = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/user_verify`,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				},
-			);
-
-			if (data.membership) {
-				navigate("/api");
-			}
-
-			if (!data.membership) {
-				toast.error("Your Membership is expired..");
-				setOpen(true);
-			}
-
-			console.log("check user try", data);
-		} catch (err) {
-			console.log("check user catch", err.response);
-			if (!err.response.data.membership) {
-				setOpen(true);
-			}
-			if (!err.response.data.access) {
-				toast.error(err.response.data.message);
-			}
-			navigate("/");
-		}
-	};
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		checkUser();
-	}, []);
+		if (data) {
+			if (data?.membership) {
+				navigate("/api");
+			}
+		} else {
+			reFetch();
+		}
+	}, [data, navigate]);
+
+	if (cLoading) {
+		return <LoadingPage />;
+	}
 
 	const handleCheckUser = async e => {
 		e.preventDefault();
@@ -74,42 +35,17 @@ const App = () => {
 		const email = e.target.email.value;
 		const password = e.target.password.value;
 
-		try {
-			setLoading(true);
-			const { data } = await axios.put(
-				`${import.meta.env.VITE_SERVER_LINK}/auth/login`,
-				{ email, password },
-			);
-
-			if (data.access) {
-				localStorage.setItem("token", data.token);
-				navigate("/api");
-			} else {
-				console.log("Access denied.");
-				setOpen(true);
-				navigate("/");
-			}
-
-			if (!data.membership) {
-				toast.error("Your Membership is expired..");
-			}
-
-			
-		} catch (err) {
-			console.error("Login error:", err);
-			setErr(err.response.message);
-
-			if (err.response && err.response.data && !err.response.data.access) {
-				toast.error(err.response.data.message);
-				setOpen(true); // Open some error UI (modal or alert)
-			} else {
-				console.log("Unknown error occurred.");
-			}
-			navigate("/"); // Fallback to home navigation
-		} finally {
-			setLoading(false); // Stop loading in the end
-		}
+		await putData({ email, password });
 	};
+
+	if (logData) {
+		if (logData?.token) {
+			localStorage.setItem("token", logData.token);
+			navigate("/api");
+		} else if (logData?.message) {
+			toast.error(logData.message);
+		}
+	}
 
 	return (
 		<div
@@ -160,7 +96,7 @@ const App = () => {
 					</button>
 				</form>
 
-				{err && <p className='text-red-500 text-sm'>{err}</p>}
+				{/* {err && <p className='text-red-500 text-sm'>{err}</p>} */}
 				<button onClick={() => setOpen(true)} className='hover:text-blue-200'>
 					Don&apos;t have Account?
 				</button>

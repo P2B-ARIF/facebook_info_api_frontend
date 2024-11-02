@@ -9,6 +9,8 @@ import InboxCode from "./../InboxCode";
 import LoadingPage from "./../LoadingPage";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
+import useGetData from "../../hook/getFetching";
+import usePutData from "../../hook/putFetching";
 
 const Complete = ({ mode }) => {
 	// console.log(mode, "mode");
@@ -18,9 +20,9 @@ const Complete = ({ mode }) => {
 		number: "",
 		email: "",
 	});
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
-	const [isLoading, setIsLoading] = useState(false);
+	// const [isLoading, setIsLoading] = useState(false);
 
 	const [searchParams] = useSearchParams();
 	const password = searchParams.get("password");
@@ -45,31 +47,33 @@ const Complete = ({ mode }) => {
 	// 	twoFA: "lasjdflasjdlf",
 	// }
 
-	const getDetails = async () => {
-		try {
-			setLoading(true);
-			const res = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/get_details`,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				},
-			);
-			setDetails(res.data);
-		} catch (err) {
-			if (!err.response.data.access) {
-				navigate("/");
-			}
-			// console.error("Error fetching details", err);
-		} finally {
-			setLoading(false);
-		}
-	};
+	const { data, loading, reFetch } = useGetData("/get_details");
+	const {
+		data: pData,
+		loading: isLoading,
+		putData,
+	} = usePutData("/mail/complete");
 
 	useEffect(() => {
-		getDetails(); // Fetch details on component load
-	}, []);
+		(async () => {
+			if (!data) {
+				await reFetch();
+			}
+		})();
+
+		if (data) {
+			setDetails(data);
+		}
+	}, [data]);
+
+	useEffect(() => {
+		if (pData && pData.acknowledged) {
+			toast.success("Successfully Complete Account Created!");
+			setTimeout(() => {
+				window.location.reload();
+			}, 300);
+		}
+	}, [pData]);
 
 	const { hasCopied: hasCopiedName, onCopy: onCopyName } = useClipboard(
 		`${details?.girlName?.fname} ${details?.girlName?.lname}`,
@@ -90,48 +94,36 @@ const Complete = ({ mode }) => {
 	const handlePaste = async () => {
 		try {
 			const text = await navigator.clipboard.readText();
+			const t = text.match(/id=(\d+)/)?.[1];
 			if (!text) return;
-			setIdDetails({ ...idDetails, uid: text.match(/id=(\d+)/)?.[1] }); // Paste the copied text
+			setIdDetails({ ...idDetails, uid: t || text }); // Paste the copied text
 		} catch (err) {
 			console.error("Failed to read clipboard contents: ", err);
 		}
 	};
 
 	const handleUpload = async () => {
-		try {
-			setIsLoading(true);
-			const { mail, pass, uid, twoFA } = idDetails || {};
+		// try {
+		// setIsLoading(true);
+		const { mail, pass, uid, twoFA } = idDetails || {};
 
-			if (
-				mail.length < 3 ||
-				pass.length < 3 ||
-				uid.length < 3 ||
-				twoFA.length < 3
-			) {
-				return toast.error("Full Data are required");
-			}
-
-			const { data } = await axios.put(
-				`${import.meta.env.VITE_SERVER_LINK}/mail/complete`,
-				{ ...idDetails, mode },
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				},
-			);
-
-			if (data.acknowledged) {
-				toast.success("Successfully Complete Account Created!");
-				setTimeout(() => {
-					window.location.reload();
-				}, 300);
-			}
-		} catch (error) {
-			toast.error(error.message);
-		} finally {
-			setIsLoading(false);
+		if (
+			mail.length < 3 ||
+			pass.length < 3 ||
+			uid.length < 3 ||
+			twoFA.length < 3
+		) {
+			toast.error("Full Data are required");
 		}
+
+		// const test = {
+		// 	mail: "zto5f72ek8@1secmail.com",
+		// 	uid: "61567056463063",
+		// 	pass: "GameTopUp2024",
+		// 	twoFA: "zto5f72ek8@1secmail.com",
+		// };
+
+		await putData({ ...idDetails, mode });
 	};
 
 	return (
