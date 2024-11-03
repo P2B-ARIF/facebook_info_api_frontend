@@ -113,7 +113,7 @@ const Complete = ({ mode }) => {
 			uid.length < 3 ||
 			twoFA.length < 3
 		) {
-			toast.error("Full Data are required");
+			return toast.error("Full Data are required");
 		}
 
 		// const test = {
