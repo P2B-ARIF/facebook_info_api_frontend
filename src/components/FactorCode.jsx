@@ -68,6 +68,7 @@ const FactorCode = ({ idDetails, setIdDetails }) => {
 				<button
 					className='border rounded-lg py-[4px] px-3'
 					onClick={handleFactorCode}
+					disabled={loading}
 				>
 					<span className='flex items-center gap-1'>
 						{loading ? "Loading..." : "Submit"}

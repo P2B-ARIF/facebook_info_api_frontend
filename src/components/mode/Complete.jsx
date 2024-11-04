@@ -297,7 +297,8 @@ const Complete = ({ mode }) => {
 			</div>
 
 			{/* Inbox  */}
-			<InboxCode email={details?.email} />
+			{/* <InboxCode email={details?.email} /> */}
+			{details?.email && <InboxCode email={details?.email} />}
 
 			{/* 2FA Code */}
 			<FactorCode idDetails={idDetails} setIdDetails={setIdDetails} />

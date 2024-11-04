@@ -1,59 +1,44 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { IoReload } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
 import MailBoxCode from "./MailBoxCode";
 
 const InboxCode = ({ email }) => {
 	const [loading, setLoading] = useState(false);
-	const navigate = useNavigate();
 	const [mailbox, setMailbox] = useState([]);
 
-	// const res = [
-	// 	{
-	// 		id: 539533784,
-	// 		from: "registration@facebookmail.com",
-	// 		subject: "531062 is your Facebook confirmation code",
-	// 		date: "2024-10-05 19:58:01",
-	// 	},
-	// ];
-
-	const handleReload = async () => {
+	const fetchMailbox = useCallback(async () => {
 		try {
 			setLoading(true);
+			const [username, domain] = email.split("@");
+			if (!username || !domain) {
+				toast.error("Invalid email format");
+				return;
+			}
 
-			// const email1 = "hejozv@1secmail.com";
-			// const email1 = "hd057l@1secmail.com";
-			// console.log();
-
-			const { data } = await axios.get(
-				`${import.meta.env.VITE_SERVER_LINK}/check_inbox?email=${email}`,
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				},
-			);
+			const url = `https://www.1secmail.com/api/v1/?action=getMessages&login=${username}&domain=${domain}`;
+			const { data } = await axios.get(url);
 			setMailbox(data);
 		} catch (err) {
-			if (err.response && !err.response.data.access) {
-				navigate("/");
-			}
+			toast.error("Failed to load messages. Try again later.");
+			console.error("Error fetching mailbox:", err.message);
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [email]);
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
-			handleReload();
-		}, 8000);
+			fetchMailbox();
+		}, 5000);
 
 		return () => clearInterval(intervalId);
-	}, []);
+	}, [fetchMailbox]);
 
-	// const { hasCopied: hasCopiedEmailCode, onCopy: onCopyEmailCode } =
-	// 	useClipboard(code);
+	const handleManualReload = () => {
+		if (!loading) fetchMailbox();
+	};
 
 	return (
 		<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
@@ -62,10 +47,10 @@ const InboxCode = ({ email }) => {
 				<button
 					disabled={loading}
 					className='border rounded-lg py-[4px] px-2 bg-slate-200 text-black'
-					onClick={() => setLoading(true)}
+					onClick={handleManualReload}
 				>
 					{loading ? (
-						"Loading.."
+						"Loading..."
 					) : (
 						<span className='flex items-center gap-1'>
 							<IoReload /> Reload
