@@ -4,9 +4,9 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import bgImage from "./assets/fb_bg.png";
 import LoadingPage from "./components/LoadingPage";
-import IpNotFound from "./components/modal/IpNotFound";
 import useGetData from "./hook/getFetching";
 import usePutData from "./hook/putFetching";
+import Register from "./Register";
 
 const App = () => {
 	const { data, loading: cLoading, reFetch } = useGetData("/user_verify");
@@ -97,10 +97,12 @@ const App = () => {
 				</form>
 
 				{/* {err && <p className='text-red-500 text-sm'>{err}</p>} */}
-				<button onClick={() => setOpen(true)} className='hover:text-blue-200'>
+				{/* <button onClick={() => setOpen(true)} className='hover:text-blue-200'>
 					Don&apos;t have Account?
 				</button>
-				<IpNotFound open={open} setOpen={setOpen} />
+				<IpNotFound open={open} setOpen={setOpen} /> */}
+
+				<Register />
 			</div>
 
 			{/* <div className='flex flex-col justify-center items-center gap-2 mt-10'>

@@ -1,9 +1,7 @@
-import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { IoIosCheckmarkCircle } from "react-icons/io";
+import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { format } from "date-fns";
+import React, { useEffect } from "react";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 import useGetData from "../hook/getFetching";
 
 const HistoryTable = () => {
@@ -28,18 +26,18 @@ const HistoryTable = () => {
 				<Thead>
 					<Tr className='bg-white'>
 						<Th>Date</Th>
-						<Th>C</Th>
-						<Th>Q</Th>
+						<Th>Created</Th>
+						{/* <Th>Q</Th> */}
 						<Th>
 							<h4 className='flex items-center gap-1'>
-								<IoIosCheckmarkCircle /> C
+								<IoIosCheckmarkCircle /> Approved
 							</h4>
 						</Th>
-						<Th>
+						{/* <Th>
 							<h4 className='flex items-center gap-1'>
 								<IoIosCheckmarkCircle /> Q
 							</h4>
-						</Th>
+						</Th> */}
 						<Th isNumeric>Total</Th>
 					</Tr>
 				</Thead>
@@ -54,9 +52,9 @@ const HistoryTable = () => {
 								<Tr key={i}>
 									<Td>{format(new Date(item.date), "MM/dd")}</Td>
 									<Td>{item.complete}</Td>
-									<Td>{item.quick}</Td>
+									{/* <Td>{item.quick}</Td> */}
 									<Td>{item.approvedComplete}</Td>
-									<Td>{item.approvedQuick}</Td>
+									{/* <Td>{item.approvedQuick}</Td> */}
 									<Td isNumeric fontWeight={"bold"}>
 										{total.toFixed(2)}
 									</Td>

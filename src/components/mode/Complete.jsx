@@ -1,16 +1,14 @@
 import { useClipboard } from "@chakra-ui/react";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaRegCopy } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { FaCloudUploadAlt, FaRegCopy } from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import useGetData from "../../hook/getFetching";
+import usePutData from "../../hook/putFetching";
 import UpdatePass from "../modal/UpdatePass";
 import FactorCode from "./../FactorCode";
 import InboxCode from "./../InboxCode";
 import LoadingPage from "./../LoadingPage";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import toast from "react-hot-toast";
-import useGetData from "../../hook/getFetching";
-import usePutData from "../../hook/putFetching";
 
 const Complete = ({ mode }) => {
 	// console.log(mode, "mode");
