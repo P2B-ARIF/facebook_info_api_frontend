@@ -115,10 +115,10 @@ const Complete = ({ mode }) => {
 		}
 
 		// const test = {
-		// 	mail: "zto5f72ek8@1secmail.com",
+		// 	mail: "su9ip1oipb@1secmail.com",
 		// 	uid: "61567056463063",
 		// 	pass: "GameTopUp2024",
-		// 	twoFA: "zto5f72ek8@1secmail.com",
+		// 	twoFA: "TI2ADFXGVKDTND4AYRWCNLBXO2YIRSCV",
 		// };
 
 		await putData({ ...idDetails, mode });

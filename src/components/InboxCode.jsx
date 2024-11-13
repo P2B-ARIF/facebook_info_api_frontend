@@ -9,8 +9,8 @@ const InboxCode = ({ email }) => {
 	const [mailbox, setMailbox] = useState([]);
 
 	const fetchMailbox = useCallback(async () => {
+		setLoading(true);
 		try {
-			setLoading(true);
 			const [username, domain] = email.split("@");
 			if (!username || !domain) {
 				toast.error("Invalid email format");

@@ -50,6 +50,7 @@ const FactorCode = ({ idDetails, setIdDetails }) => {
 			<div className='border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
 				<input
 					type='text'
+					readOnly
 					value={inputValue}
 					onChange={e => setInputValue(e.target.value)}
 					className='w-full bg-transparent border-none outline-none'
