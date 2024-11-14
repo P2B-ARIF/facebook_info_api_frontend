@@ -1,4 +1,6 @@
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import bgImage from "./assets/fb_bg1.jpg";
 import HistoryTable from "./components/HistoryTable";
 import LoadingPage from "./components/LoadingPage";
@@ -9,6 +11,7 @@ import useGetData from "./hook/getFetching";
 const Home = () => {
 	const [mode, setMode] = useState("complete");
 	const [show, setShow] = useState(false);
+	const navigate = useNavigate();
 
 	const complete = import.meta.env.VITE_COMPLETE_PRICE;
 	// const quick = import.meta.env.VITE_QUICK_PRICE;
@@ -16,11 +19,15 @@ const Home = () => {
 	const { data: tData, loading, reFetch: tReFetch } = useGetData("/api/today");
 	const { loading: cLoading, reFetch } = useGetData("/user_verify");
 
+	const date = format(new Date(), "dd.MM");
+
 	useEffect(() => {
 		(async () => {
 			await tReFetch();
 			await reFetch();
 		})();
+
+		navigate(`/api?password=Gametopup_${date}`);
 	}, []);
 
 	if (cLoading) {

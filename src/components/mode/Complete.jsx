@@ -1,11 +1,11 @@
 import { useClipboard } from "@chakra-ui/react";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCloudUploadAlt, FaRegCopy } from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useGetData from "../../hook/getFetching";
 import usePutData from "../../hook/putFetching";
-import UpdatePass from "../modal/UpdatePass";
 import FactorCode from "./../FactorCode";
 import InboxCode from "./../InboxCode";
 import LoadingPage from "./../LoadingPage";
@@ -26,11 +26,14 @@ const Complete = ({ mode }) => {
 	const password = searchParams.get("password");
 	const location = useLocation();
 
+	const date = format(new Date(), "dd.MM");
 	useEffect(() => {
 		if (!password) {
-			navigate(`/api?password=GameTopUp2024`);
+			navigate(`/api?password=Gametopup_${date}`);
 		}
 	}, []);
+
+	// console.log(`Gametopup_${date}`);
 
 	const [idDetails, setIdDetails] = useState({
 		mail: " ",
@@ -199,7 +202,7 @@ const Complete = ({ mode }) => {
 								</span>
 							)}
 						</button>
-						<UpdatePass />
+						{/* <UpdatePass /> */}
 					</div>
 				</div>
 			</div>
