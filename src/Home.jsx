@@ -19,7 +19,10 @@ const Home = () => {
 	const { data: tData, loading, reFetch: tReFetch } = useGetData("/api/today");
 	const { loading: cLoading, reFetch } = useGetData("/user_verify");
 
-	const date = format(new Date(), "dd.MM");
+	// const date = format(new Date(), "dd.MM");
+	const nextDay = new Date();
+	nextDay.setDate(nextDay.getDate() + 1);
+	const date = format(nextDay, "dd.MM");
 
 	useEffect(() => {
 		(async () => {

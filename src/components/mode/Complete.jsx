@@ -27,7 +27,12 @@ const Complete = ({ mode }) => {
 	const [searchParams] = useSearchParams();
 	const password = searchParams.get("password");
 
-	const date = format(new Date(), "dd.MM");
+	// const date = format(new Date(), "dd.MM");
+	const nextDay = new Date();
+	nextDay.setDate(nextDay.getDate() + 1);
+	const date = format(nextDay, "dd.MM");
+	// console.log(d);
+
 	useEffect(() => {
 		if (!password) {
 			navigate(`/api?password=Gametopup_${date}`);
