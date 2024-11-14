@@ -43,7 +43,7 @@ const InboxCode = ({ email }) => {
 	return (
 		<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
 			<div className='flex items-center justify-between'>
-				<h6 className='font-medium'>Verify Code</h6>
+				<h6 className='font-medium'>Email Verify Code</h6>
 				<button
 					disabled={loading}
 					className='border rounded-lg py-[4px] px-2 bg-slate-200 text-black'

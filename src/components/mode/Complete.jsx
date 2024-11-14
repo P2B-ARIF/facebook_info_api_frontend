@@ -2,8 +2,10 @@ import { useClipboard } from "@chakra-ui/react";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaCloudUploadAlt, FaRegCopy } from "react-icons/fa";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { FaRegPaste } from "react-icons/fa6";
+import { GiClick } from "react-icons/gi";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useGetData from "../../hook/getFetching";
 import usePutData from "../../hook/putFetching";
 import FactorCode from "./../FactorCode";
@@ -24,7 +26,6 @@ const Complete = ({ mode }) => {
 
 	const [searchParams] = useSearchParams();
 	const password = searchParams.get("password");
-	const location = useLocation();
 
 	const date = format(new Date(), "dd.MM");
 	useEffect(() => {
@@ -98,6 +99,10 @@ const Complete = ({ mode }) => {
 			const t = text.match(/id=(\d+)/)?.[1];
 			if (!text) return;
 			setIdDetails({ ...idDetails, uid: t || text }); // Paste the copied text
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
 		} catch (err) {
 			console.error("Failed to read clipboard contents: ", err);
 		}
@@ -153,31 +158,6 @@ const Complete = ({ mode }) => {
 						</>
 					)}
 				</button>
-
-				{/* <button
-					className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
-					onClick={handleCopyDataPc}
-				>
-					{hasCopiedCombinedDataPc ? (
-						"Copied All"
-					) : (
-						<span className='flex items-center gap-1'>
-							<FaRegCopy /> Pc Copy
-						</span>
-					)}
-				</button>
-				<button
-					className='rounded-lg py-[2px] px-4 bg-slate-200 border-[1px] border-slate-500 mt-2'
-					onClick={handleCopyDataMobile}
-				>
-					{hasCopiedCombinedDataMobile ? (
-						"Copied All"
-					) : (
-						<span className='flex items-center gap-1'>
-							<FaRegCopy /> Mobile Copy
-						</span>
-					)}
-				</button> */}
 			</div>
 
 			{/* Password  */}
@@ -188,7 +168,7 @@ const Complete = ({ mode }) => {
 					<h3>{password}</h3>
 					<div className='flex items-center gap-2'>
 						<button
-							className='border rounded-lg py-[4px] px-2'
+							className='border rounded-lg py-[4px] px-2 bg-blue-600 text-white'
 							onClick={() => {
 								onCopyPassword(),
 									setIdDetails({ ...idDetails, pass: password });
@@ -198,7 +178,7 @@ const Complete = ({ mode }) => {
 								"Copied"
 							) : (
 								<span className='flex items-center gap-1'>
-									<FaRegCopy /> Copy
+									<GiClick /> Copy
 								</span>
 							)}
 						</button>
@@ -206,30 +186,6 @@ const Complete = ({ mode }) => {
 					</div>
 				</div>
 			</div>
-
-			{/* {password && (
-				<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
-					<h6 className='font-medium'>Password</h6>
-					<div className='flex items-center justify-between border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
-						<h3>{password}</h3>
-						<button
-							className='border rounded-lg py-[4px] px-2'
-							onClick={() => {
-								onCopyPassword(),
-									setIdDetails({ ...idDetails, pass: password });
-							}}
-						>
-							{hasCopiedPassword ? (
-								"Copied"
-							) : (
-								<span className='flex items-center gap-1'>
-									<FaRegCopy /> Copy
-								</span>
-							)}
-						</button>
-					</div>
-				</div>
-			)} */}
 
 			{/* Name  */}
 			<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
@@ -239,14 +195,14 @@ const Complete = ({ mode }) => {
 						{details?.girlName?.fname} {details?.girlName?.lname}
 					</h3>
 					<button
-						className='border rounded-lg py-[4px] px-2'
+						className='border rounded-lg py-[4px] px-2 bg-blue-600 text-white'
 						onClick={onCopyName}
 					>
 						{hasCopiedName ? (
 							"Copied"
 						) : (
 							<span className='flex items-center gap-1'>
-								<FaRegCopy /> Copy
+								<GiClick /> Copy
 							</span>
 						)}
 					</button>
@@ -259,14 +215,14 @@ const Complete = ({ mode }) => {
 				<div className='flex items-center justify-between border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
 					<h3>{details?.number}</h3>
 					<button
-						className='border rounded-lg py-[4px] px-2'
+						className='border rounded-lg py-[4px] px-2 bg-blue-600 text-white'
 						onClick={onCopyNumber}
 					>
 						{hasCopiedNumber ? (
 							"Copied"
 						) : (
 							<span className='flex items-center gap-1'>
-								<FaRegCopy /> Copy
+								<GiClick /> Copy
 							</span>
 						)}
 					</button>
@@ -279,7 +235,7 @@ const Complete = ({ mode }) => {
 				<div className='flex items-center justify-between border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
 					<h3>{details?.email}</h3>
 					<button
-						className='border rounded-lg py-[4px] px-2'
+						className='border rounded-lg py-[4px] px-2 bg-blue-600 text-white'
 						// onClick={onCopyEmail}
 						onClick={() => {
 							setIdDetails({ ...idDetails, mail: details.email }),
@@ -290,7 +246,7 @@ const Complete = ({ mode }) => {
 							"Copied"
 						) : (
 							<span className='flex items-center gap-1'>
-								<FaRegCopy /> Copy
+								<GiClick /> Copy
 							</span>
 						)}
 					</button>
@@ -306,7 +262,7 @@ const Complete = ({ mode }) => {
 
 			{/* UID */}
 			<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
-				<h6 className='font-medium'>UID</h6>
+				<h6 className='font-medium'>Profile URL</h6>
 
 				<div className='border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
 					<input
@@ -323,7 +279,7 @@ const Complete = ({ mode }) => {
 						onClick={handlePaste}
 					>
 						<span className='flex items-center gap-1'>
-							<FaRegCopy /> Paste Url
+							<FaRegPaste /> Paste Url
 						</span>
 					</button>
 				</div>
