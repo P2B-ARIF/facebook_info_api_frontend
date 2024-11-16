@@ -32,26 +32,18 @@ const HistoryTable = ({ mode }) => {
 					<Tr className='bg-white'>
 						<Th>Date</Th>
 						<Th>Created</Th>
-						{/* <Th>Q</Th> */}
 						<Th>
 							<h4 className='flex items-center gap-1'>
 								<IoIosCheckmarkCircle /> Approved
 							</h4>
 						</Th>
-						{/* <Th>
-							<h4 className='flex items-center gap-1'>
-								<IoIosCheckmarkCircle /> Q
-							</h4>
-						</Th> */}
 						<Th isNumeric>Total</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
 					{data && mode === "complete"
 						? data.map((item, i) => {
-								const total =
-									Number(item.approvedComplete * complete) +
-									Number(item.approvedQuick * quick);
+								const total = Number(item.approvedComplete * complete);
 
 								return (
 									<Tr key={i}>
