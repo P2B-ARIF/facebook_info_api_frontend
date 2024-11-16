@@ -83,9 +83,9 @@ const Insta2fa = ({ mode }) => {
 	const { hasCopied: hasCopiedName, onCopy: onCopyName } = useClipboard(
 		`${details?.girlName?.fname} ${details?.girlName?.lname}`,
 	);
-	// const { hasCopied: hasCopiedNumber, onCopy: onCopyNumber } = useClipboard(
-	// 	details?.number,
-	// );
+	const { hasCopied: hasCopiedNumber, onCopy: onCopyNumber } = useClipboard(
+		details?.number,
+	);
 	const { hasCopied: hasCopiedEmail, onCopy: onCopyEmail } = useClipboard(
 		details.email,
 	);
@@ -212,7 +212,7 @@ const Insta2fa = ({ mode }) => {
 			</div>
 
 			{/* Number  */}
-			{/* <div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
+			<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
 				<h6 className='font-medium'>Number</h6>
 				<div className='flex items-center justify-between border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'>
 					<h3>{details?.number}</h3>
@@ -229,7 +229,7 @@ const Insta2fa = ({ mode }) => {
 						)}
 					</button>
 				</div>
-			</div> */}
+			</div>
 
 			{/* Email  */}
 			<div className='border rounded-lg p-3 bg-slate-800 text-slate-200 my-2'>
