@@ -4,9 +4,11 @@ import toast from "react-hot-toast";
 import { IoReload } from "react-icons/io5";
 import MailBoxCode from "./MailBoxCode";
 
-const InboxCode = ({ email }) => {
+const InboxCode = ({email}) => {
 	const [loading, setLoading] = useState(false);
 	const [mailbox, setMailbox] = useState([]);
+
+// let email = "qujeizthoe@1secmail.com"
 
 	const fetchMailbox = useCallback(async () => {
 		setLoading(true);
@@ -62,7 +64,7 @@ const InboxCode = ({ email }) => {
 			{/* <div className=' border rounded-md py-1 px-2 m-1 ml-0 bg-white text-slate-800'> */}
 			<div className='bg-white text-slate-800 border rounded-md p-2 flex flex-col gap-2 mt-2'>
 				{mailbox.length > 0 ? (
-					mailbox?.map((mail, i) => <MailBoxCode key={i} mail={mail} />)
+					mailbox?.map((mail, i) => <MailBoxCode key={i} email={email} mail={mail} />)
 				) : (
 					<input
 						type='text'

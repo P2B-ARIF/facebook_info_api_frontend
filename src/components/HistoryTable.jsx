@@ -4,11 +4,16 @@ import React, { useEffect } from "react";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import useGetData from "../hook/getFetching";
 
-const HistoryTable = () => {
-	const { data, loading, reFetch } = useGetData("/api/table");
+const HistoryTable = ({ mode }) => {
+	const endpoints = mode === "complete" ? "/api/table" : "/api/instagram/table";
+
+	const { data, loading, reFetch } = useGetData(endpoints);
+	// const { data, loading, reFetch } = useGetData("/api/table");
+
+	console.log(data, "data", mode);
 
 	const complete = import.meta.env.VITE_COMPLETE_PRICE;
-	const quick = import.meta.env.VITE_QUICK_PRICE;
+	const insta2fa = import.meta.env.VITE_INSTA2FA;
 
 	useEffect(() => {
 		(async () => {
@@ -42,25 +47,38 @@ const HistoryTable = () => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{data &&
-						data.map((item, i) => {
-							const total =
-								Number(item.approvedComplete * complete) +
-								Number(item.approvedQuick * quick);
+					{data && mode === "complete"
+						? data.map((item, i) => {
+								const total =
+									Number(item.approvedComplete * complete) +
+									Number(item.approvedQuick * quick);
 
-							return (
-								<Tr key={i}>
-									<Td>{format(new Date(item.date), "MM/dd")}</Td>
-									<Td>{item.complete}</Td>
-									{/* <Td>{item.quick}</Td> */}
-									<Td>{item.approvedComplete}</Td>
-									{/* <Td>{item.approvedQuick}</Td> */}
-									<Td isNumeric fontWeight={"bold"}>
-										{total.toFixed(2)}
-									</Td>
-								</Tr>
-							);
-						})}
+								return (
+									<Tr key={i}>
+										<Td>{format(new Date(item.date), "MM/dd")}</Td>
+										<Td>{item.complete}</Td>
+										{/* <Td>{item.quick}</Td> */}
+										<Td>{item.approvedComplete}</Td>
+										{/* <Td>{item.approvedQuick}</Td> */}
+										<Td isNumeric fontWeight={"bold"}>
+											{total.toFixed(2)}
+										</Td>
+									</Tr>
+								);
+						  })
+						: data.map((ins, i) => {
+								const total = Number(ins.approvedCount * insta2fa);
+								return (
+									<Tr key={i}>
+										<Td>{format(new Date(ins.date), "MM/dd")}</Td>
+										<Td>{ins.totalCount}</Td>
+										<Td>{ins.approvedCount}</Td>
+										<Td isNumeric fontWeight={"bold"}>
+											{total.toFixed(2)}
+										</Td>
+									</Tr>
+								);
+						  })}
 				</Tbody>
 			</Table>
 		</div>

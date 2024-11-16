@@ -7,6 +7,7 @@ import LoadingPage from "./components/LoadingPage";
 import Complete from "./components/mode/Complete";
 import Quick from "./components/mode/Quick";
 import useGetData from "./hook/getFetching";
+import Insta2fa from "./components/mode/Insta2fa";
 
 const Home = () => {
 	const [mode, setMode] = useState("complete");
@@ -14,10 +15,12 @@ const Home = () => {
 	const navigate = useNavigate();
 
 	const complete = import.meta.env.VITE_COMPLETE_PRICE;
-	// const quick = import.meta.env.VITE_QUICK_PRICE;
+	const insta2fa = import.meta.env.VITE_INSTA2FA;
 
 	const { data: tData, loading, reFetch: tReFetch } = useGetData("/api/today");
 	const { loading: cLoading, reFetch } = useGetData("/user_verify");
+
+// console.log(tData, 'data')
 
 	// const date = format(new Date(), "dd.MM");
 	const nextDay = new Date();
@@ -30,7 +33,7 @@ const Home = () => {
 			await reFetch();
 		})();
 
-		navigate(`/api?password=Gametopup_${date}`);
+		navigate(`/api?password=@p2barif_${date}`);
 	}, []);
 
 	if (cLoading) {
@@ -50,14 +53,15 @@ const Home = () => {
 						<div className='flex items-center justify-between'>
 							<h3 className='text-xl font-medium mb-5'>Dashboard</h3>
 							<h3 className='text-xl font-medium mb-5'>
-								Today - {tData?.today}
+								Today -{" "}
+								{mode === "complete" ? tData?.facebook : tData?.instagram}
 							</h3>
 						</div>
 						<h2 className='text-xl font-bold'>Mode</h2>
-						<div className='flex items-center gap-2'>
+						<div className='grid grid-cols-2 items-center gap-2 mt-2'>
 							<button
 								onClick={() => setMode("complete")}
-								className={`rounded-lg py-[2px] w-full border-[1px] mt-2 ${
+								className={`rounded-lg py-[2px] w-full border-[1px] ${
 									mode === "complete"
 										? "bg-blue-600 text-white border-blue-600"
 										: "border-slate-500"
@@ -65,19 +69,19 @@ const Home = () => {
 							>
 								Complete - {complete} TK
 							</button>
-							{/* <button
-								// onClick={() => setMode("quick")}
-								className={`rounded-lg py-[2px] w-full border-[1px] mt-2 ${
-									mode === "quick"
+							<button
+								onClick={() => setMode("insta2fa")}
+								className={`rounded-lg py-[2px] w-full border-[1px] ${
+									mode === "insta2fa"
 										? "bg-blue-600 text-white border-blue-600"
 										: "border-slate-500"
 								}`}
 							>
-								Quick - {quick}
-							</button> */}
+								Insta2FA - {insta2fa} TK
+							</button>
 							<button
 								onClick={() => setShow(!show)}
-								className={`rounded-lg py-[2px] w-full border-[1px] mt-2 ${
+								className={`rounded-lg py-[2px] w-full border-[1px] ${
 									show
 										? "bg-green-600 text-white border-green-600"
 										: "border-slate-500"
@@ -92,13 +96,15 @@ const Home = () => {
 								<h2 className='text-lg font-medium text-center'>
 									History & Report Table
 								</h2>
-								<HistoryTable />
+								<HistoryTable mode={mode} />
 							</div>
 						)}
 					</div>
 
 					{mode === "complete" ? (
 						<Complete mode={mode} />
+					) : mode === "insta2fa" ? (
+						<Insta2fa mode={mode} />
 					) : (
 						<Quick mode={mode} />
 					)}
