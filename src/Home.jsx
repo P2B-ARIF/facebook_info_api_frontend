@@ -9,7 +9,7 @@ import Quick from "./components/mode/Quick";
 import useGetData from "./hook/getFetching";
 import Insta2fa from "./components/mode/Insta2fa";
 
-// const Home = () => {
+const Home = () => {
 // 	return (
 // 		<div className="bg-blue-500 h-screen w-full flex items-center justify-center">
 // 			<h1 className="font-bold text-lg text-center">
